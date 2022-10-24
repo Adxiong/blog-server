@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2022-10-23 22:37:38
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-10-23 23:48:36
+ * @LastEditTime: 2022-10-24 23:21:47
  */
 package article
 
@@ -26,7 +26,7 @@ func GetArticleList(ctx *gin.Context) {
 
 	if errParams != nil {
 		log.Println("err", errParams)
-		ctx.JSON(200, gin.H{"msg": errParams})
+		ctx.JSON(200, gin.H{"msg": errParams.Error()})
 		return
 	}
 
@@ -34,7 +34,7 @@ func GetArticleList(ctx *gin.Context) {
 	articleList, errArticleList := Article.FindArticleList(ctx, params.Pn, params.Num, nil)
 	if errArticleList != nil {
 		log.Println("err", errArticleList)
-		ctx.JSON(200, gin.H{"msg": errArticleList})
+		ctx.JSON(200, gin.H{"msg": errArticleList.Error()})
 		return
 	}
 
@@ -45,11 +45,11 @@ func GetArticleList(ctx *gin.Context) {
 func checkGetArticleListParams(ctx *gin.Context) (*GetArticleListParams, error) {
 	res := &GetArticleListParams{}
 
-	err := ctx.ShouldBindJSON(res)
+	err := ctx.ShouldBind(res)
 
 	if err != nil {
 		msg := fmt.Errorf("params is invalid")
-		log.Println("err", msg)
+		log.Println("err", err)
 		return nil, msg
 	}
 

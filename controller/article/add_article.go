@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2022-10-23 22:33:57
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-10-23 23:43:22
+ * @LastEditTime: 2022-10-24 23:16:03
  */
 package article
 
@@ -26,7 +26,8 @@ func AddArticle(ctx *gin.Context) {
 	params, errParams := checkAddArticleParams(ctx)
 	if errParams != nil {
 		log.Println("err", errParams)
-		ctx.JSON(200, gin.H{"msg": errParams})
+		log.Printf("params:%+v", params)
+		ctx.JSON(200, gin.H{"msg": errParams.Error()})
 		return
 	}
 	aid := uint64(1231)
@@ -39,7 +40,7 @@ func AddArticle(ctx *gin.Context) {
 	_, errAdd := Article.AddArticle(ctx)
 	if errAdd != nil {
 		log.Println("err", errAdd)
-		ctx.JSON(200, gin.H{"msg": errAdd})
+		ctx.JSON(200, gin.H{"msg": errAdd.Error()})
 		return
 	}
 	ctx.JSON(200, gin.H{"msg": "success"})
@@ -55,10 +56,9 @@ func checkAddArticleParams(ctx *gin.Context) (*CreateArticleParams, error) {
 	}
 
 	if len(res.Title) > 255 {
-		msg := "password len is greater than 255"
+		msg := "title len is greater than 255"
 		log.Println("err", msg)
 		return nil, fmt.Errorf(msg)
 	}
-
 	return res, nil
 }

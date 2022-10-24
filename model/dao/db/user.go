@@ -84,15 +84,9 @@ func (user *user) FindUserList(ctx context.Context, pn int, num int, params map[
 }
 
 func (user *user) BeforeCreate(tx *gorm.DB) error {
-	if user.CreatedAt.IsZero() {
-		t := time.Now()
-		user.CreatedAt = &t
-	}
-
-	if user.UpdatedAt.IsZero() {
-		t := time.Now()
-		user.UpdatedAt = &t
-	}
+	t := time.Now()
+	user.CreatedAt = &t
+	user.UpdatedAt = &t
 
 	return nil
 }

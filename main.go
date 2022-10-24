@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2022-10-16 23:16:23
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-10-24 00:00:51
+ * @LastEditTime: 2022-10-24 22:56:25
  */
 package main
 
@@ -20,10 +20,10 @@ func main() {
 
 	defer cancel()
 
-	ip := "127.0.0.1:8080"
-	server, errServer := bootstrap.Server(ctx, ip)
+	ip := ":8080"
+	server, errServer := bootstrap.Start(ctx, ip)
 	if errServer != nil {
-
+		fmt.Println("bootstrap server start failed")
 	}
 	if errRun := server.Run(ip); errRun != nil {
 		fmt.Println("start listen server failed")

@@ -81,15 +81,9 @@ func (article *article) FindArticleList(ctx context.Context, pn int, num int, pa
 }
 
 func (article *article) BeforeCreate(tx *gorm.DB) error {
-	if article.CreatedAt.IsZero() {
-		t := time.Now()
-		article.CreatedAt = &t
-	}
-
-	if article.UpdatedAt.IsZero() {
-		t := time.Now()
-		article.UpdatedAt = &t
-	}
+	t := time.Now()
+	article.CreatedAt = &t
+	article.UpdatedAt = &t
 
 	return nil
 }

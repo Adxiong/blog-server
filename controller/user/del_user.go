@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2022-10-23 22:36:19
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-10-23 23:27:03
+ * @LastEditTime: 2022-10-24 22:59:28
  */
 package user
 
@@ -25,7 +25,7 @@ func DelUser(ctx *gin.Context) {
 
 	if errParams != nil {
 		log.Println("err", errParams)
-		ctx.JSON(200, gin.H{"msg": errParams})
+		ctx.JSON(200, gin.H{"msg": errParams.Error()})
 		return
 	}
 

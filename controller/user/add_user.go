@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2022-10-23 22:33:51
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-10-23 23:34:18
+ * @LastEditTime: 2022-10-24 22:59:13
  */
 package user
 
@@ -26,7 +26,7 @@ func AddUser(ctx *gin.Context) {
 	params, errParams := checkAddUserParams(ctx)
 	if errParams != nil {
 		log.Println("err", errParams)
-		ctx.JSON(200, gin.H{"msg": errParams})
+		ctx.JSON(200, gin.H{"msg": errParams.Error()})
 		return
 	}
 
@@ -39,7 +39,7 @@ func AddUser(ctx *gin.Context) {
 	_, errAdd := User.AddUser(ctx)
 	if errAdd != nil {
 		log.Println("err", errAdd)
-		ctx.JSON(200, gin.H{"msg": errAdd})
+		ctx.JSON(200, gin.H{"msg": errAdd.Error()})
 		return
 	}
 	ctx.JSON(200, gin.H{"msg": "success"})

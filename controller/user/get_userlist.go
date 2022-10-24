@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2022-10-23 22:36:45
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-10-23 23:30:25
+ * @LastEditTime: 2022-10-24 22:59:34
  */
 package user
 
@@ -27,7 +27,7 @@ func GetUserList(ctx *gin.Context) {
 
 	if errParams != nil {
 		log.Println("err", errParams)
-		ctx.JSON(200, gin.H{"msg": errParams})
+		ctx.JSON(200, gin.H{"msg": errParams.Error()})
 		return
 	}
 
@@ -35,7 +35,7 @@ func GetUserList(ctx *gin.Context) {
 	userlist, errUserlist := User.FindUserList(ctx, params.Pn, params.Num, nil)
 	if errUserlist != nil {
 		log.Println("err", errUserlist)
-		ctx.JSON(200, gin.H{"msg": errUserlist})
+		ctx.JSON(200, gin.H{"msg": errUserlist.Error()})
 		return
 	}
 

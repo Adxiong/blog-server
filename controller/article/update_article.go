@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2022-10-23 22:37:54
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-10-23 23:51:04
+ * @LastEditTime: 2022-10-24 22:59:03
  */
 package article
 
@@ -26,7 +26,7 @@ func UpdateArticle(ctx *gin.Context) {
 
 	if errParams != nil {
 		log.Println("err", errParams)
-		ctx.JSON(200, gin.H{"msg": errParams})
+		ctx.JSON(200, gin.H{"msg": errParams.Error()})
 		return
 	}
 

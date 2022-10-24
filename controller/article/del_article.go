@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2022-10-23 22:37:23
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-10-23 23:45:42
+ * @LastEditTime: 2022-10-24 22:58:38
  */
 package article
 
@@ -25,7 +25,7 @@ func DelArticle(ctx *gin.Context) {
 
 	if errParams != nil {
 		log.Println("err", errParams)
-		ctx.JSON(200, gin.H{"msg": errParams})
+		ctx.JSON(200, gin.H{"msg": errParams.Error()})
 		return
 	}
 
