@@ -4,12 +4,13 @@
  * @Author: Adxiong
  * @Date: 2022-10-16 23:18:21
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-10-24 22:45:42
+ * @LastEditTime: 2022-10-25 23:38:47
  */
 package bootstrap
 
 import (
 	"blogserver/httpserver"
+	"blogserver/library/middlewares"
 	"context"
 	"log"
 
@@ -33,6 +34,7 @@ func Start(ctx context.Context, addr string) (*gin.Engine, error) {
 func Server(ctx context.Context, addr string) (*gin.Engine, error) {
 
 	g := gin.Default()
+	g.Use(middlewares.Cors())
 
 	httpserver.RegisterController(ctx, g)
 

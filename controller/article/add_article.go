@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2022-10-23 22:33:57
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-10-24 23:16:03
+ * @LastEditTime: 2022-10-25 23:31:16
  */
 package article
 
@@ -48,7 +48,7 @@ func AddArticle(ctx *gin.Context) {
 
 func checkAddArticleParams(ctx *gin.Context) (*CreateArticleParams, error) {
 	res := &CreateArticleParams{}
-	err := ctx.ShouldBindJSON(res)
+	err := ctx.ShouldBind(res)
 
 	if err != nil {
 		log.Println("err", err)
