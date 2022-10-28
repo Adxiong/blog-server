@@ -5,7 +5,7 @@
  * @Author: Adxiong
  * @Date: 2022-10-23 22:34:28
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-10-23 23:58:04
+ * @LastEditTime: 2022-10-29 00:39:13
  */
 package httpserver
 
@@ -55,6 +55,12 @@ var routes = map[string]RouterHandler{
 		Method: request.METHODGET,
 		Handle: HandleFuncs{
 			user.GetUserList,
+		},
+	},
+	"/article/detail": {
+		Method: request.METHODGET,
+		Handle: HandleFuncs{
+			article.GetArticleDetail,
 		},
 	},
 	"/article/add": {
