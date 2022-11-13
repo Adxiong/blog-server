@@ -9,12 +9,10 @@ import (
 	"gorm.io/gorm"
 )
 
-type ArticleDao interface {
-	AddArticle()
-	UpdateArticleAID()
-	DeleteArticleByAID()
-	FindArticleByAID()
-	FindArticleList()
+type queryArticleParam struct {
+	Title    *string
+	AuthorID *uint64
+	Context  *string
 }
 
 func NewArticle() *article {
@@ -54,7 +52,8 @@ func (article *article) DeleteArticleByAID(ctx context.Context, aid uint64) (*in
 
 func (article *article) FindArticleByAID(ctx context.Context, aid uint64) (*article, error) {
 	params := map[string]interface{}{
-		ArticleColumn.AID: aid,
+		ArticleColumn.AID:   aid,
+		ArticleColumn.IsDel: 0,
 	}
 	res := GlobalDb.Table(article.TableName()).Where(params).Limit(1).Find(article)
 

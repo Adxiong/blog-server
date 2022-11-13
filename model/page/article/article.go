@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2022-10-23 17:03:00
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-10-23 23:52:21
+ * @LastEditTime: 2022-11-13 21:51:05
  */
 package svrarticle
 
@@ -135,10 +135,32 @@ func (article *Article) FindArticleByAID(ctx context.Context, aid uint64) (*Arti
 
 }
 
-func (article *Article) FindArticleList(ctx context.Context, pn int, num int, params map[string]interface{}) (*ArticleList, error) {
+type QueryArticleParam struct {
+	Title    *string
+	AuthorID *uint64
+	Context  *string
+}
+
+func (article *Article) FindArticleList(ctx context.Context, pn int, num int, cond QueryArticleParam) (*ArticleList, error) {
 	dbArticle := db.NewArticle()
 
-	dbResult, err := dbArticle.FindArticleList(ctx, pn, num, params)
+	queryParams := make(map[string]interface{})
+
+	if cond.Title != nil {
+		queryParams[db.ArticleColumn.Title] = *cond.Title
+	}
+
+	if cond.AuthorID != nil {
+		queryParams[db.ArticleColumn.AuthorID] = *cond.AuthorID
+	}
+
+	if cond.Context != nil {
+		queryParams[db.ArticleColumn.Content] = *cond.Context
+	}
+
+	queryParams[db.ArticleColumn.IsDel] = 0
+
+	dbResult, err := dbArticle.FindArticleList(ctx, pn, num, queryParams)
 
 	if err != nil {
 		msg := fmt.Errorf("SERVICE_ARTICLE_ARTICLE_FindArticleList_DbArticleFindArticleList_Failed")

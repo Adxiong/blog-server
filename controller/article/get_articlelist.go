@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2022-10-23 22:37:38
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-10-24 23:21:47
+ * @LastEditTime: 2022-11-13 21:50:33
  */
 package article
 
@@ -17,8 +17,11 @@ import (
 )
 
 type GetArticleListParams struct {
-	Pn  int `form:"pn"`
-	Num int `form:"num"`
+	Pn       int    `form:"pn"`
+	Num      int    `form:"num"`
+	Title    string `form:"title"`
+	Content  string `form:"content"`
+	AuthorID uint64 `form:"author_id"`
 }
 
 func GetArticleList(ctx *gin.Context) {
@@ -31,7 +34,21 @@ func GetArticleList(ctx *gin.Context) {
 	}
 
 	Article := svrarticle.Article{}
-	articleList, errArticleList := Article.FindArticleList(ctx, params.Pn, params.Num, nil)
+	cond := svrarticle.QueryArticleParam{}
+
+	if len(params.Title) > 1 {
+		cond.Title = &params.Title
+	}
+
+	if len(params.Content) > 1 {
+		cond.Context = &params.Content
+	}
+
+	if params.AuthorID > 0 {
+		cond.AuthorID = &params.AuthorID
+	}
+
+	articleList, errArticleList := Article.FindArticleList(ctx, params.Pn, params.Num, cond)
 	if errArticleList != nil {
 		log.Println("err", errArticleList)
 		ctx.JSON(200, gin.H{"msg": errArticleList.Error()})
