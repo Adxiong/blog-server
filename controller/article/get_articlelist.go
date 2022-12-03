@@ -4,11 +4,12 @@
  * @Author: Adxiong
  * @Date: 2022-10-23 22:37:38
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-11-13 21:50:33
+ * @LastEditTime: 2022-12-03 23:23:00
  */
 package article
 
 import (
+	"blogserver/library/response"
 	svrarticle "blogserver/model/page/article"
 	"fmt"
 	"log"
@@ -29,7 +30,7 @@ func GetArticleList(ctx *gin.Context) {
 
 	if errParams != nil {
 		log.Println("err", errParams)
-		ctx.JSON(200, gin.H{"msg": errParams.Error()})
+		response.Code(ctx, 205, errParams.Error())
 		return
 	}
 
