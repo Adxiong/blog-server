@@ -4,11 +4,12 @@
  * @Author: Adxiong
  * @Date: 2022-10-23 22:36:19
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-10-24 22:59:28
+ * @LastEditTime: 2022-12-04 16:24:28
  */
 package user
 
 import (
+	"blogserver/library/response"
 	svruser "blogserver/model/page/user"
 	"fmt"
 	"log"
@@ -25,7 +26,7 @@ func DelUser(ctx *gin.Context) {
 
 	if errParams != nil {
 		log.Println("err", errParams)
-		ctx.JSON(200, gin.H{"msg": errParams.Error()})
+		response.Error(ctx, 200, errParams.Error())
 		return
 	}
 
@@ -34,11 +35,11 @@ func DelUser(ctx *gin.Context) {
 
 	if errDel != nil {
 		log.Println("err", errDel)
-		ctx.JSON(200, gin.H{"msg": "del account failed"})
+		response.Error(ctx, 200, "del account failed")
 		return
 	}
 
-	ctx.JSON(200, gin.H{"msg": "success"})
+	response.Json(ctx, nil)
 }
 
 func checkDelUserParams(ctx *gin.Context) (*DelUserParams, error) {

@@ -4,11 +4,12 @@
  * @Author: Adxiong
  * @Date: 2022-10-23 22:37:54
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-10-24 22:59:03
+ * @LastEditTime: 2022-12-04 16:22:28
  */
 package article
 
 import (
+	"blogserver/library/response"
 	svrarticle "blogserver/model/page/article"
 	"fmt"
 	"log"
@@ -26,7 +27,7 @@ func UpdateArticle(ctx *gin.Context) {
 
 	if errParams != nil {
 		log.Println("err", errParams)
-		ctx.JSON(200, gin.H{"msg": errParams.Error()})
+		response.Error(ctx, 200, errParams.Error())
 		return
 	}
 
@@ -41,11 +42,10 @@ func UpdateArticle(ctx *gin.Context) {
 
 	if errUpdate != nil {
 		log.Println("err", errUpdate)
-		ctx.JSON(200, gin.H{"msg": "user update failed"})
+		response.Error(ctx, 200, "user update failed")
 		return
 	}
-
-	ctx.JSON(200, gin.H{"msg": "success"})
+	response.Json(ctx, nil)
 
 }
 

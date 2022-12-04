@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2022-10-29 00:21:07
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-12-03 23:28:40
+ * @LastEditTime: 2022-12-04 16:21:23
  */
 package article
 
@@ -26,7 +26,7 @@ func GetArticleDetail(ctx *gin.Context) {
 
 	if errParams != nil {
 		log.Println("err", errParams)
-		response.Code(ctx, 205, errParams.Error())
+		response.Error(ctx, 205, errParams.Error())
 		return
 	}
 
@@ -34,7 +34,7 @@ func GetArticleDetail(ctx *gin.Context) {
 	articleDetail, errArticleDetail := Article.FindArticleByAID(ctx, params.Aid)
 	if errArticleDetail != nil {
 		log.Println("err", errArticleDetail)
-		response.Code(ctx, 205, errParams.Error())
+		response.Error(ctx, 205, errParams.Error())
 		return
 	}
 

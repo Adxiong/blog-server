@@ -4,11 +4,12 @@
  * @Author: Adxiong
  * @Date: 2022-10-23 22:36:32
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-10-24 22:59:55
+ * @LastEditTime: 2022-12-04 16:26:27
  */
 package user
 
 import (
+	"blogserver/library/response"
 	svruser "blogserver/model/page/user"
 	"fmt"
 	"log"
@@ -26,7 +27,7 @@ func UpdateUser(ctx *gin.Context) {
 
 	if errParams != nil {
 		log.Println("err", errParams)
-		ctx.JSON(200, gin.H{"msg": errParams.Error()})
+		response.Error(ctx, 200, errParams.Error())
 		return
 	}
 
@@ -41,11 +42,11 @@ func UpdateUser(ctx *gin.Context) {
 
 	if errUpdate != nil {
 		log.Println("err", errUpdate)
-		ctx.JSON(200, gin.H{"msg": "user update failed"})
+		response.Error(ctx, 200, "user update failed")
 		return
 	}
 
-	ctx.JSON(200, gin.H{"msg": "success"})
+	response.Json(ctx, nil)
 
 }
 

@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2022-10-23 22:33:57
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-10-25 23:31:16
+ * @LastEditTime: 2022-12-04 16:19:37
  */
 package article
 
@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"log"
 
+	"blogserver/library/response"
 	svrarticle "blogserver/model/page/article"
 
 	"github.com/gin-gonic/gin"
@@ -27,7 +28,7 @@ func AddArticle(ctx *gin.Context) {
 	if errParams != nil {
 		log.Println("err", errParams)
 		log.Printf("params:%+v", params)
-		ctx.JSON(200, gin.H{"msg": errParams.Error()})
+		response.Error(ctx, 200, errParams.Error())
 		return
 	}
 	aid := uint64(1231)
@@ -40,10 +41,10 @@ func AddArticle(ctx *gin.Context) {
 	_, errAdd := Article.AddArticle(ctx)
 	if errAdd != nil {
 		log.Println("err", errAdd)
-		ctx.JSON(200, gin.H{"msg": errAdd.Error()})
+		response.Error(ctx, 200, errParams.Error())
 		return
 	}
-	ctx.JSON(200, gin.H{"msg": "success"})
+	response.Json(ctx, nil)
 }
 
 func checkAddArticleParams(ctx *gin.Context) (*CreateArticleParams, error) {

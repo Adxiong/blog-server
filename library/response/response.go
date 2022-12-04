@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2022-12-03 23:07:53
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-12-03 23:35:01
+ * @LastEditTime: 2022-12-03 23:40:21
  */
 package response
 
@@ -20,14 +20,14 @@ type responseBody struct {
 
 func Json(ctx *gin.Context, data any) {
 	resultData := responseBody{
-		Errno:  200,
+		Errno:  0,
 		ErrMsg: "success",
 		Data:   data,
 	}
 	ctx.JSON(200, resultData)
 }
 
-func Code(ctx *gin.Context, code int, msg string) {
+func Error(ctx *gin.Context, code int, msg string) {
 	resultData := responseBody{
 		Errno:  code,
 		ErrMsg: msg,

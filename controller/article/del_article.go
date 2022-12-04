@@ -4,11 +4,12 @@
  * @Author: Adxiong
  * @Date: 2022-10-23 22:37:23
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-11-13 20:23:55
+ * @LastEditTime: 2022-12-04 16:20:25
  */
 package article
 
 import (
+	"blogserver/library/response"
 	svrarticle "blogserver/model/page/article"
 	"fmt"
 	"log"
@@ -25,7 +26,7 @@ func DelArticle(ctx *gin.Context) {
 
 	if errParams != nil {
 		log.Println("err", errParams)
-		ctx.JSON(200, gin.H{"msg": errParams.Error()})
+		response.Error(ctx, 200, errParams.Error())
 		return
 	}
 
@@ -34,11 +35,10 @@ func DelArticle(ctx *gin.Context) {
 
 	if errDel != nil {
 		log.Println("err", errDel)
-		ctx.JSON(200, gin.H{"msg": "del account failed"})
+		response.Error(ctx, 200, "del account failed")
 		return
 	}
-
-	ctx.JSON(200, gin.H{"msg": "success"})
+	response.Json(ctx, nil)
 }
 
 func checkDelArticleParams(ctx *gin.Context) (*DelArticleParams, error) {

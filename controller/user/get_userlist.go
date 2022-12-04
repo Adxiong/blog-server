@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2022-10-23 22:36:45
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-10-24 22:59:34
+ * @LastEditTime: 2022-12-04 16:25:26
  */
 package user
 
@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"log"
 
+	"blogserver/library/response"
 	svruser "blogserver/model/page/user"
 
 	"github.com/gin-gonic/gin"
@@ -27,7 +28,7 @@ func GetUserList(ctx *gin.Context) {
 
 	if errParams != nil {
 		log.Println("err", errParams)
-		ctx.JSON(200, gin.H{"msg": errParams.Error()})
+		response.Error(ctx, 200, errParams.Error())
 		return
 	}
 
@@ -35,11 +36,11 @@ func GetUserList(ctx *gin.Context) {
 	userlist, errUserlist := User.FindUserList(ctx, params.Pn, params.Num, nil)
 	if errUserlist != nil {
 		log.Println("err", errUserlist)
-		ctx.JSON(200, gin.H{"msg": errUserlist.Error()})
+		response.Error(ctx, 200, errUserlist.Error())
 		return
 	}
 
-	ctx.JSON(200, gin.H{"msg": "success", "data": userlist})
+	response.Json(ctx, userlist)
 
 }
 
