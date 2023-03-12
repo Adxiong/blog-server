@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2022-10-29 00:21:07
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-12-04 16:21:23
+ * @LastEditTime: 2023-02-27 00:12:28
  */
 package article
 
@@ -23,6 +23,7 @@ type GetArticleDetailParams struct {
 
 func GetArticleDetail(ctx *gin.Context) {
 	params, errParams := checkGetArticleDetailParams(ctx)
+	log.Println("err", 111)
 
 	if errParams != nil {
 		log.Println("err", errParams)
@@ -34,7 +35,7 @@ func GetArticleDetail(ctx *gin.Context) {
 	articleDetail, errArticleDetail := Article.FindArticleByAID(ctx, params.Aid)
 	if errArticleDetail != nil {
 		log.Println("err", errArticleDetail)
-		response.Error(ctx, 205, errParams.Error())
+		response.Error(ctx, 205, errArticleDetail.Error())
 		return
 	}
 

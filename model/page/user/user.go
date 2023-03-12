@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2022-10-23 17:02:54
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-10-23 21:47:37
+ * @LastEditTime: 2023-03-12 17:14:47
  */
 package svruser
 
@@ -25,13 +25,13 @@ type UserService interface {
 }
 
 type User struct {
-	ID        uint64     `json:"id"`
-	UID       uint64     `json:"uid"`
-	Password  string     `json:"password"`
-	Username  string     `json:"username"`
-	Email     string     `json:"email"`
-	CreatedAt *time.Time `json:"create_at"`
-	UpdatedAt *time.Time `json:"update_at"`
+	ID       uint64     `json:"id"`
+	UID      uint64     `json:"uid"`
+	Password string     `json:"password"`
+	Username string     `json:"username"`
+	Email    string     `json:"email"`
+	CreateAt *time.Time `json:"create_at"`
+	UpdateAt *time.Time `json:"update_at"`
 }
 
 type UserList []User
@@ -62,13 +62,13 @@ func (user *User) AddUser(ctx context.Context) (*User, error) {
 	}
 
 	res := &User{
-		ID:        dbResult.ID,
-		UID:       dbResult.UID,
-		Username:  dbResult.Username,
-		Password:  dbResult.Password,
-		Email:     dbResult.Email,
-		CreatedAt: dbResult.CreatedAt,
-		UpdatedAt: dbResult.UpdatedAt,
+		ID:       dbResult.ID,
+		UID:      dbResult.UID,
+		Username: dbResult.Username,
+		Password: dbResult.Password,
+		Email:    dbResult.Email,
+		CreateAt: dbResult.CreateAt,
+		UpdateAt: dbResult.UpdateAt,
 	}
 
 	return res, nil
@@ -79,11 +79,11 @@ func (user *User) UpdateUserByUID(ctx context.Context, uid uint64, params *Updat
 
 	val := map[string]interface{}{}
 	if params.Username != nil {
-		val[db.UserColumn.Username] = *params.Username
+		val[db.UserColumns.Username] = *params.Username
 	}
 
 	if params.Password != nil {
-		val[db.UserColumn.Password] = *params.Password
+		val[db.UserColumns.Password] = *params.Password
 	}
 
 	_, err := dbUser.UpdateUserByUID(ctx, uid, val)
@@ -123,13 +123,13 @@ func (user *User) FindUserByEmail(ctx context.Context, email string) (*User, err
 	}
 
 	result := &User{
-		ID:        dbResult.ID,
-		UID:       dbResult.UID,
-		Username:  dbResult.Username,
-		Email:     dbResult.Email,
-		Password:  dbResult.Password,
-		CreatedAt: dbResult.CreatedAt,
-		UpdatedAt: dbResult.UpdatedAt,
+		ID:       dbResult.ID,
+		UID:      dbResult.UID,
+		Username: dbResult.Username,
+		Email:    dbResult.Email,
+		Password: dbResult.Password,
+		CreateAt: dbResult.CreateAt,
+		UpdateAt: dbResult.UpdateAt,
 	}
 
 	return result, nil

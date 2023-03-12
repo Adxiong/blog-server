@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2022-10-23 17:03:00
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-11-13 21:51:05
+ * @LastEditTime: 2023-03-12 17:13:56
  */
 package svrarticle
 
@@ -46,92 +46,106 @@ func NewArticleService() *Article {
 }
 
 func (article *Article) AddArticle(ctx context.Context) (*Article, error) {
+	var result *Article
+	var err error
+
 	dbArticle := db.NewArticle()
 
-	dbArticle.AID = article.AID
+	dbArticle.Aid = article.AID
 	dbArticle.Title = article.Title
 	dbArticle.Content = article.Content
 	dbArticle.AuthorID = article.AuthorID
 
-	dbResult, err := dbArticle.AddArticle(ctx)
+	dbResult, dbResultErr := dbArticle.AddArticle(ctx)
 
-	if err != nil {
-		msg := fmt.Errorf("SERVICE_ARTICLE_ARTICLE_AddArticle_Failed")
-		log.Println("err", msg)
-		return nil, msg
+	if dbResultErr != nil {
+		err = fmt.Errorf("SERVICE_ARTICLE_ARTICLE_AddArticle_Failed")
+		log.Println("err", err)
+		return result, err
 	}
 
-	res := &Article{
+	result = &Article{
 		ID:       dbResult.ID,
-		AID:      dbResult.AID,
+		AID:      dbResult.Aid,
 		Title:    dbResult.Title,
 		Content:  dbResult.Content,
 		AuthorID: dbResult.AuthorID,
-		CreateAt: dbResult.CreatedAt,
-		UpdateAt: dbResult.UpdatedAt,
+		CreateAt: dbResult.CreateAt,
+		UpdateAt: dbResult.UpdateAt,
 	}
 
-	return res, nil
+	return result, err
 }
 
 func (article *Article) UpdateArticleByAID(ctx context.Context, aid uint64, params *UpdateArticleParams) error {
+	var err error
+
 	dbArticle := db.NewArticle()
 
 	val := map[string]interface{}{}
 
 	if params.Title != nil {
-		val[db.ArticleColumn.Title] = *params.Title
+		val[db.ArticleColumns.Title] = *params.Title
 	}
 
 	if params.Content != nil {
-		val[db.ArticleColumn.Content] = *params.Content
+		val[db.ArticleColumns.Content] = *params.Content
 	}
 
-	_, err := dbArticle.UpdateArticleAID(ctx, aid, val)
+	rowsAffected, UpdateErr := dbArticle.UpdateArticleAID(ctx, aid, val)
 
-	if err != nil {
-		msg := fmt.Errorf("SERVICE_ARTICLE_ARTICLE_UpdateArticleByAID_DbArticleUpdateArticleAID_Failed")
-		log.Println("err", msg)
-		return msg
+	if UpdateErr != nil || int(*rowsAffected) <= 0 {
+		err = fmt.Errorf("SERVICE_ARTICLE_ARTICLE_UpdateArticleByAID_DbArticleUpdateArticleAID_Failed")
+		log.Println("err", err)
+		return err
 	}
-	return nil
+
+	return err
 }
 
 func (article *Article) DeleteArticleByAID(ctx context.Context, aid uint64) error {
+	var err error
+
 	dbArticle := db.NewArticle()
 
-	_, err := dbArticle.DeleteArticleByAID(ctx, aid)
+	rowsAffected, DelteErr := dbArticle.DeleteArticleByAID(ctx, aid)
 
-	if err != nil {
-		msg := fmt.Errorf("SERVICE_ARTICLE_ARTICLE_DeleteArticleByAID_DbArticleDeleteArticleByAID_Failed")
-		log.Println("err", msg)
-		return msg
+	if DelteErr != nil || int(*rowsAffected) <= 0 {
+		err = fmt.Errorf("SERVICE_ARTICLE_ARTICLE_DeleteArticleByAID_DbArticleDeleteArticleByAID_Failed")
+		log.Println("err", err)
+		return err
 	}
 
-	return nil
+	return err
 }
 
 func (article *Article) FindArticleByAID(ctx context.Context, aid uint64) (*Article, error) {
+	var result *Article
+	var err error
+
 	dbArticle := db.NewArticle()
 
-	dbResult, err := dbArticle.FindArticleByAID(ctx, aid)
+	dbResult, dbResultErr := dbArticle.FindArticleByAID(ctx, aid)
 
-	if err != nil {
-		msg := fmt.Errorf("SERVICE_ARTICLE_ARTICLE_FindArticleByAID_DbArticleFindArticleByAID_Failed")
-		log.Println("err", msg)
-		return nil, msg
+	if dbResultErr != nil {
+		err = fmt.Errorf("SERVICE_ARTICLE_ARTICLE_FindArticleByAID_DbArticleFindArticleByAID_Failed")
+		return result, err
 	}
 
-	result := &Article{
+	if dbResult.Aid <= 0 {
+		return result, err
+	}
+
+	result = &Article{
 		ID:       dbResult.ID,
-		AID:      dbArticle.AID,
+		AID:      dbArticle.Aid,
 		Title:    dbArticle.Title,
 		Content:  dbArticle.Content,
 		AuthorID: dbArticle.AuthorID,
-		CreateAt: dbArticle.CreatedAt,
-		UpdateAt: dbArticle.UpdatedAt,
+		CreateAt: dbArticle.CreateAt,
+		UpdateAt: dbArticle.UpdateAt,
 	}
-	return result, nil
+	return result, err
 
 }
 
@@ -142,43 +156,50 @@ type QueryArticleParam struct {
 }
 
 func (article *Article) FindArticleList(ctx context.Context, pn int, num int, cond QueryArticleParam) (*ArticleList, error) {
+	var result ArticleList
+	var err error
+
 	dbArticle := db.NewArticle()
 
 	queryParams := make(map[string]interface{})
 
 	if cond.Title != nil {
-		queryParams[db.ArticleColumn.Title] = *cond.Title
+		queryParams[db.ArticleColumns.Title] = *cond.Title
 	}
 
 	if cond.AuthorID != nil {
-		queryParams[db.ArticleColumn.AuthorID] = *cond.AuthorID
+		queryParams[db.ArticleColumns.AuthorID] = *cond.AuthorID
 	}
 
 	if cond.Context != nil {
-		queryParams[db.ArticleColumn.Content] = *cond.Context
+		queryParams[db.ArticleColumns.Content] = *cond.Context
 	}
 
-	queryParams[db.ArticleColumn.IsDel] = 0
+	queryParams[db.ArticleColumns.IsDel] = 0
 
-	dbResult, err := dbArticle.FindArticleList(ctx, pn, num, queryParams)
+	dbResult, dbResultErr := dbArticle.FindArticleList(ctx, pn, num, queryParams)
 
-	if err != nil {
-		msg := fmt.Errorf("SERVICE_ARTICLE_ARTICLE_FindArticleList_DbArticleFindArticleList_Failed")
-		log.Println("err", msg)
-		return nil, msg
+	if dbResultErr != nil {
+		err = fmt.Errorf("SERVICE_ARTICLE_ARTICLE_FindArticleList_DbArticleFindArticleList_Failed")
+		log.Println("err", err)
+		return &result, err
 	}
 
-	result := make(ArticleList, 0)
+	if len(*dbResult) <= 0 {
+		return &result, err
+	}
+
+	result = make(ArticleList, 0)
 
 	for _, item := range *dbResult {
 		temp := Article{
 			ID:       item.ID,
-			AID:      item.AID,
+			AID:      item.Aid,
 			Title:    item.Title,
 			Content:  item.Content,
 			AuthorID: item.AuthorID,
-			CreateAt: item.CreatedAt,
-			UpdateAt: item.UpdatedAt,
+			CreateAt: item.CreateAt,
+			UpdateAt: item.UpdateAt,
 		}
 
 		result = append(result, temp)

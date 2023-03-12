@@ -15,15 +15,15 @@ type queryArticleParam struct {
 	Context  *string
 }
 
-func NewArticle() *article {
-	return &article{}
+func NewArticle() *Article {
+	return &Article{}
 }
 
-func NewArticleList() *articleList {
-	return &articleList{}
+func NewArticleList() *ArticleList {
+	return &ArticleList{}
 }
 
-func (article *article) AddArticle(ctx context.Context) (*article, error) {
+func (article *Article) AddArticle(ctx context.Context) (*Article, error) {
 	err := GlobalDb.Table(article.TableName()).Create(article).Error
 	if err != nil {
 		log.Println("err", err)
@@ -32,8 +32,8 @@ func (article *article) AddArticle(ctx context.Context) (*article, error) {
 	return article, nil
 }
 
-func (article *article) UpdateArticleAID(ctx context.Context, aid uint64, values map[string]interface{}) (*int64, error) {
-	res := GlobalDb.Table(article.TableName()).Where("aid = ?", aid).Updates(values)
+func (Article *Article) UpdateArticleAID(ctx context.Context, aid uint64, values map[string]interface{}) (*int64, error) {
+	res := GlobalDb.Table(Article.TableName()).Where("aid = ?", aid).Updates(values)
 	if res.Error != nil {
 		log.Println("err", res.Error)
 		return nil, res.Error
@@ -41,8 +41,8 @@ func (article *article) UpdateArticleAID(ctx context.Context, aid uint64, values
 	return &res.RowsAffected, nil
 }
 
-func (article *article) DeleteArticleByAID(ctx context.Context, aid uint64) (*int64, error) {
-	res := GlobalDb.Table(article.TableName()).Where("aid = ?", aid).Update(ArticleColumn.IsDel, 1)
+func (Article *Article) DeleteArticleByAID(ctx context.Context, aid uint64) (*int64, error) {
+	res := GlobalDb.Table(Article.TableName()).Where("aid = ?", aid).Update(ArticleColumns.IsDel, 1)
 	if res.Error != nil {
 		log.Println("err", res.Error)
 		return nil, res.Error
@@ -50,52 +50,52 @@ func (article *article) DeleteArticleByAID(ctx context.Context, aid uint64) (*in
 	return &res.RowsAffected, nil
 }
 
-func (article *article) FindArticleByAID(ctx context.Context, aid uint64) (*article, error) {
+func (Article *Article) FindArticleByAID(ctx context.Context, aid uint64) (*Article, error) {
 	params := map[string]interface{}{
-		ArticleColumn.AID:   aid,
-		ArticleColumn.IsDel: 0,
+		ArticleColumns.Aid:   aid,
+		ArticleColumns.IsDel: 0,
 	}
-	res := GlobalDb.Table(article.TableName()).Where(params).Limit(1).Find(article)
+	res := GlobalDb.Table(Article.TableName()).Where(params).Limit(1).Find(Article)
 
 	if res.Error != nil {
 		log.Println("err", res.Error)
 		return nil, res.Error
 	}
 
-	return article, nil
+	return Article, nil
 }
 
-func (article *article) FindArticleList(ctx context.Context, pn int, num int, params map[string]interface{}) (*articleList, error) {
-	articleList := NewArticleList()
+func (Article *Article) FindArticleList(ctx context.Context, pn int, num int, params map[string]interface{}) (*ArticleList, error) {
+	ArticleList := NewArticleList()
 	offset := pn * num
 
-	res := GlobalDb.Table(article.TableName()).Offset(offset).Limit(num).Where(params).Find(articleList)
+	res := GlobalDb.Table(Article.TableName()).Offset(offset).Limit(num).Where(params).Find(ArticleList)
 
 	if res.Error != nil {
 		log.Println("err", res.Error)
 		return nil, res.Error
 	}
 
-	return articleList, nil
+	return ArticleList, nil
 }
 
-func (article *article) BeforeCreate(tx *gorm.DB) error {
+func (Article *Article) BeforeCreate(tx *gorm.DB) error {
 	t := time.Now()
-	article.CreatedAt = &t
-	article.UpdatedAt = &t
+	Article.CreateAt = &t
+	Article.UpdateAt = &t
 
 	return nil
 }
 
-func (article *article) BeforeUpdate(tx *gorm.DB) error {
+func (Article *Article) BeforeUpdate(tx *gorm.DB) error {
 	if values, ok := tx.Statement.Dest.(map[string]interface{}); ok {
-		if _, ok := values[ArticleColumn.UpdatedAt]; !ok {
+		if _, ok := values[ArticleColumns.UpdateAt]; !ok {
 			t := time.Now()
-			values[ArticleColumn.UpdatedAt] = &t
+			values[ArticleColumns.UpdateAt] = &t
 		}
 
-		if _, ok := values[ArticleColumn.Version]; !ok {
-			values[ArticleColumn.Version] = gorm.Expr(fmt.Sprintf("%s + ?", ArticleColumn.Version), 1)
+		if _, ok := values[ArticleColumns.Version]; !ok {
+			values[ArticleColumns.Version] = gorm.Expr(fmt.Sprintf("%s + ?", ArticleColumns.Version), 1)
 		}
 	}
 

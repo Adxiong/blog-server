@@ -17,15 +17,15 @@ type UserDao interface {
 	FindUserList()
 }
 
-func NewUser() *user {
-	return &user{}
+func NewUser() *User {
+	return &User{}
 }
 
-func NewUserList() *userList {
-	return &userList{}
+func NewUserList() *UserList {
+	return &UserList{}
 }
 
-func (user *user) AddUser(ctx context.Context) (*user, error) {
+func (user *User) AddUser(ctx context.Context) (*User, error) {
 	err := GlobalDb.Table(user.TableName()).Create(user).Error
 	if err != nil {
 		log.Println("err", err)
@@ -34,7 +34,7 @@ func (user *user) AddUser(ctx context.Context) (*user, error) {
 	return user, nil
 }
 
-func (user *user) UpdateUserByUID(ctx context.Context, uid uint64, values map[string]interface{}) (int64, error) {
+func (user *User) UpdateUserByUID(ctx context.Context, uid uint64, values map[string]interface{}) (int64, error) {
 	var rowsAffected int64
 	res := GlobalDb.Table(user.TableName()).Where("uid = ?", uid).Updates(values)
 	if res.Error != nil {
@@ -44,10 +44,10 @@ func (user *user) UpdateUserByUID(ctx context.Context, uid uint64, values map[st
 	return res.RowsAffected, nil
 }
 
-func (user *user) DeleteUserByUID(ctx context.Context, uid uint64) (int64, error) {
+func (user *User) DeleteUserByUID(ctx context.Context, uid uint64) (int64, error) {
 	var rowsAffected int64
 
-	res := GlobalDb.Table(user.TableName()).Where("uid = ?", uid).Update(UserColumn.IsDel, 1)
+	res := GlobalDb.Table(user.TableName()).Where("uid = ?", uid).Update(UserColumns.IsDel, 1)
 	if res.Error != nil {
 		log.Println("err", res.Error)
 		return rowsAffected, res.Error
@@ -55,9 +55,9 @@ func (user *user) DeleteUserByUID(ctx context.Context, uid uint64) (int64, error
 	return res.RowsAffected, nil
 }
 
-func (user *user) FindUserByEmail(ctx context.Context, email string) (*user, error) {
+func (user *User) FindUserByEmail(ctx context.Context, email string) (*User, error) {
 	params := map[string]interface{}{
-		UserColumn.Email: email,
+		UserColumns.Email: email,
 	}
 	res := GlobalDb.Table(user.TableName()).Where(params).Limit(1).Find(user)
 
@@ -69,7 +69,7 @@ func (user *user) FindUserByEmail(ctx context.Context, email string) (*user, err
 	return user, nil
 }
 
-func (user *user) FindUserList(ctx context.Context, pn int, num int, params map[string]interface{}) (*userList, error) {
+func (user *User) FindUserList(ctx context.Context, pn int, num int, params map[string]interface{}) (*UserList, error) {
 	userList := NewUserList()
 	offset := pn * num
 
@@ -83,23 +83,23 @@ func (user *user) FindUserList(ctx context.Context, pn int, num int, params map[
 	return userList, nil
 }
 
-func (user *user) BeforeCreate(tx *gorm.DB) error {
+func (user *User) BeforeCreate(tx *gorm.DB) error {
 	t := time.Now()
-	user.CreatedAt = &t
-	user.UpdatedAt = &t
+	user.CreateAt = &t
+	user.UpdateAt = &t
 
 	return nil
 }
 
-func (user *user) BeforeUpdate(tx *gorm.DB) error {
+func (user *User) BeforeUpdate(tx *gorm.DB) error {
 	if values, ok := tx.Statement.Dest.(map[string]interface{}); ok {
-		if _, ok := values[UserColumn.UpdatedAt]; !ok {
+		if _, ok := values[UserColumns.UpdateAt]; !ok {
 			t := time.Now()
-			values[UserColumn.UpdatedAt] = &t
+			values[UserColumns.UpdateAt] = &t
 		}
 
-		if _, ok := values[UserColumn.Version]; !ok {
-			values[UserColumn.UpdatedAt] = gorm.Expr(fmt.Sprintf("%s + ?", UserColumn.Version), 1)
+		if _, ok := values[UserColumns.Version]; !ok {
+			values[UserColumns.UpdateAt] = gorm.Expr(fmt.Sprintf("%s + ?", UserColumns.Version), 1)
 		}
 	}
 

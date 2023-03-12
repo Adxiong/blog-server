@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2022-10-16 23:18:13
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-10-24 22:48:42
+ * @LastEditTime: 2023-02-27 00:19:24
  */
 package bootstrap
 
@@ -13,6 +13,8 @@ import (
 	"io"
 	"log"
 	"os"
+
+	"blogserver/library/resource"
 )
 
 func Mustinit() {
@@ -32,15 +34,15 @@ func initMysql() {
 }
 
 func initLog() {
-	f, err := os.OpenFile("log/blog.log", os.O_CREATE|os.O_APPEND|os.O_RDWR, os.ModePerm)
+	f, err := os.OpenFile("log/blog.log", os.O_CREATE|os.O_RDWR|os.O_APPEND, os.ModePerm)
 	if err != nil {
+		log.Panic(err)
 		return
 	}
 	defer f.Close()
 
 	// 组合一下即可，os.Stdout代表标准输出流
 	multiWriter := io.MultiWriter(os.Stdout, f)
-	log.SetOutput(multiWriter)
+	resource.ServiceLogger = log.New(multiWriter, "Info", log.LstdFlags|log.Lshortfile|log.Lmicroseconds)
 
-	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
 }
