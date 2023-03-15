@@ -47,7 +47,7 @@ func (user *User) UpdateUserByUID(ctx context.Context, uid uint64, values map[st
 func (user *User) DeleteUserByUID(ctx context.Context, uid uint64) (int64, error) {
 	var rowsAffected int64
 
-	res := GlobalDb.Table(user.TableName()).Where("uid = ?", uid).Update(UserColumns.IsDel, 1)
+	res := GlobalDb.Table(user.TableName()).Where("uid = ?", uid).Update(UserColumns.IsDel, IS_DEL)
 	if res.Error != nil {
 		log.Println("err", res.Error)
 		return rowsAffected, res.Error

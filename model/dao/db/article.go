@@ -42,7 +42,7 @@ func (Article *Article) UpdateArticleAID(ctx context.Context, aid uint64, values
 }
 
 func (Article *Article) DeleteArticleByAID(ctx context.Context, aid uint64) (*int64, error) {
-	res := GlobalDb.Table(Article.TableName()).Where("aid = ?", aid).Update(ArticleColumns.IsDel, 1)
+	res := GlobalDb.Table(Article.TableName()).Where("aid = ?", aid).Update(ArticleColumns.IsDel, IS_DEL)
 	if res.Error != nil {
 		log.Println("err", res.Error)
 		return nil, res.Error

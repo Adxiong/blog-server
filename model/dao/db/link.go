@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2023-03-12 16:57:01
  * @LastEditors: Adxiong
- * @LastEditTime: 2023-03-12 23:26:13
+ * @LastEditTime: 2023-03-15 23:52:10
  */
 package db
 
@@ -33,7 +33,7 @@ func (link *Link) AddLink(ctx context.Context) (*Link, error) {
 
 // DelLink 删除link
 func (link *Link) DelLink(ctx context.Context, link_id int64) (int64, error) {
-	res := GlobalDb.Table(link.TableName()).Where("link_id = ?", link_id).Update(LinkCategoryColumns.IsDel, 1)
+	res := GlobalDb.Table(link.TableName()).Where("link_id = ?", link_id).Update(LinkCategoryColumns.IsDel, IS_DEL)
 	if res.Error != nil {
 		log.Println("err", res.Error)
 		return res.RowsAffected, res.Error
@@ -44,7 +44,7 @@ func (link *Link) DelLink(ctx context.Context, link_id int64) (int64, error) {
 
 // 更新link
 func (link *Link) UpdateLink(ctx context.Context, link_id uint64, values map[string]interface{}) (int64, error) {
-	res := GlobalDb.Table(link.TableName()).Where("link_id = ?", link_id).Updates(values)
+	res := GlobalDb.Table(link.TableName()).Where("link_id  = ?", link_id).Updates(values)
 	if res.Error != nil {
 		log.Println("err", res.Error)
 		return res.RowsAffected, res.Error
