@@ -4,13 +4,17 @@
  * @Author: Adxiong
  * @Date: 2023-03-12 16:57:01
  * @LastEditors: Adxiong
- * @LastEditTime: 2023-03-15 23:52:10
+ * @LastEditTime: 2023-03-20 23:23:41
  */
 package db
 
 import (
 	"context"
+	"fmt"
 	"log"
+	"time"
+
+	"gorm.io/gorm"
 )
 
 func NewLink() *Link {
@@ -32,7 +36,7 @@ func (link *Link) AddLink(ctx context.Context) (*Link, error) {
 }
 
 // DelLink 删除link
-func (link *Link) DelLink(ctx context.Context, link_id int64) (int64, error) {
+func (link *Link) DelLink(ctx context.Context, link_id uint64) (int64, error) {
 	res := GlobalDb.Table(link.TableName()).Where("link_id = ?", link_id).Update(LinkCategoryColumns.IsDel, IS_DEL)
 	if res.Error != nil {
 		log.Println("err", res.Error)
@@ -65,4 +69,27 @@ func (link *Link) GetLinkList(ctx context.Context) (*LinkList, error) {
 	}
 
 	return linkList, nil
+}
+
+func (link *Link) BeforeCreate(tx *gorm.DB) error {
+	t := time.Now()
+	link.CreateAt = &t
+	link.UpdateAt = &t
+
+	return nil
+}
+
+func (link *Link) BeforeUpdate(tx *gorm.DB) error {
+	if values, ok := tx.Statement.Dest.(map[string]interface{}); ok {
+		if _, ok := values[LinkColumns.UpdateAt]; !ok {
+			t := time.Now()
+			values[LinkColumns.UpdateAt] = &t
+		}
+
+		if _, ok := values[LinkColumns.Version]; !ok {
+			values[LinkColumns.UpdateAt] = gorm.Expr(fmt.Sprintf("%s + ?", LinkColumns.Version), 1)
+		}
+	}
+
+	return nil
 }

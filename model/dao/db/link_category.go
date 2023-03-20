@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2023-03-12 16:56:53
  * @LastEditors: Adxiong
- * @LastEditTime: 2023-03-15 23:51:22
+ * @LastEditTime: 2023-03-20 23:36:05
  */
 package db
 
@@ -12,6 +12,9 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"time"
+
+	"gorm.io/gorm"
 )
 
 func NewLinkCategory() *LinkCategory {
@@ -23,7 +26,7 @@ func NewLinkCategoryList() *LinkCategoryList {
 }
 
 // GetLinkCategoryList 获取所有link类别
-func (lc *LinkCategory) GetLinkCategoryList() (*LinkCategoryList, error) {
+func (lc *LinkCategory) GetLinkCategoryList(ctx context.Context) (*LinkCategoryList, error) {
 	linkCategoryList := NewLinkCategoryList()
 	res := GlobalDb.Table(lc.TableName()).Order("create_at aes").Find(linkCategoryList)
 
@@ -71,4 +74,27 @@ func (lc *LinkCategory) DelLinkCategory(ctx context.Context, lc_id uint64) (int6
 	}
 
 	return res.RowsAffected, nil
+}
+
+func (lc *LinkCategory) BeforeCreate(tx *gorm.DB) error {
+	t := time.Now()
+	lc.CreateAt = &t
+	lc.UpdateAt = &t
+
+	return nil
+}
+
+func (lc *LinkCategory) BeforeUpdate(tx *gorm.DB) error {
+	if values, ok := tx.Statement.Dest.(map[string]interface{}); ok {
+		if _, ok := values[LinkCategoryColumns.UpdateAt]; !ok {
+			t := time.Now()
+			values[LinkCategoryColumns.UpdateAt] = &t
+		}
+
+		if _, ok := values[LinkCategoryColumns.Version]; !ok {
+			values[LinkCategoryColumns.UpdateAt] = gorm.Expr(fmt.Sprintf("%s + ?", LinkCategoryColumns.Version), 1)
+		}
+	}
+
+	return nil
 }
