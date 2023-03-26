@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2022-12-03 23:07:53
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-12-03 23:40:21
+ * @LastEditTime: 2023-03-26 16:45:35
  */
 package response
 
@@ -31,7 +31,7 @@ func Error(ctx *gin.Context, code int, msg string) {
 	resultData := responseBody{
 		Errno:  code,
 		ErrMsg: msg,
-		Data:   make([]any, 0),
+		Data:   struct{}{},
 	}
 	ctx.JSON(200, resultData)
 }

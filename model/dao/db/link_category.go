@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2023-03-12 16:56:53
  * @LastEditors: Adxiong
- * @LastEditTime: 2023-03-20 23:36:05
+ * @LastEditTime: 2023-03-26 22:59:43
  */
 package db
 
@@ -23,6 +23,18 @@ func NewLinkCategory() *LinkCategory {
 
 func NewLinkCategoryList() *LinkCategoryList {
 	return &LinkCategoryList{}
+}
+
+// GetLinkCategoryByCid 根据cid获取类别
+func (lc *LinkCategory) GetLinkCategoryByCid(ctx context.Context, cid uint64) (*LinkCategory, error) {
+	linkCategory := NewLinkCategory()
+	res := GlobalDb.Table(lc.TableName()).Find(linkCategory)
+
+	if res.Error != nil {
+		log.Println("err", res.Error)
+		return nil, res.Error
+	}
+	return linkCategory, nil
 }
 
 // GetLinkCategoryList 获取所有link类别

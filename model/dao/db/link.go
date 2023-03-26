@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2023-03-12 16:57:01
  * @LastEditors: Adxiong
- * @LastEditTime: 2023-03-20 23:23:41
+ * @LastEditTime: 2023-03-26 23:11:22
  */
 package db
 
@@ -58,10 +58,10 @@ func (link *Link) UpdateLink(ctx context.Context, link_id uint64, values map[str
 }
 
 // GetLinkList 获取所有的link列表
-func (link *Link) GetLinkList(ctx context.Context) (*LinkList, error) {
+func (link *Link) GetLinkListByCid(ctx context.Context, cid uint64) (*LinkList, error) {
 	linkList := NewLinkList()
 
-	res := GlobalDb.Table(link.TableName()).Order("create_at aes").Find(linkList)
+	res := GlobalDb.Table(link.TableName()).Where("category_id =?", cid).Find(linkList)
 
 	if res.Error != nil {
 		log.Println("err", res.Error)

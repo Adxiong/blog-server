@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2023-03-15 23:56:27
  * @LastEditors: Adxiong
- * @LastEditTime: 2023-03-20 23:38:33
+ * @LastEditTime: 2023-03-26 23:02:25
  */
 package link
 
@@ -14,8 +14,8 @@ import (
 	"fmt"
 )
 
-func (lc *LinkCategory) GetLinkCategoryList(ctx context.Context) (*[]LinkCategory, error) {
-	result := make([]LinkCategory, 0)
+func (lc *LinkCategory) GetLinkCategoryList(ctx context.Context) ([]*LinkCategory, error) {
+	result := make([]*LinkCategory, 0)
 
 	dbLink := db.NewLinkCategory()
 	dbResult, dbErr := dbLink.GetLinkCategoryList(ctx)
@@ -26,7 +26,7 @@ func (lc *LinkCategory) GetLinkCategoryList(ctx context.Context) (*[]LinkCategor
 	}
 
 	for _, item := range *dbResult {
-		tmp := LinkCategory{
+		tmp := &LinkCategory{
 			ID:       item.ID,
 			Cid:      item.Cid,
 			Name:     item.Name,
@@ -37,5 +37,5 @@ func (lc *LinkCategory) GetLinkCategoryList(ctx context.Context) (*[]LinkCategor
 		result = append(result, tmp)
 	}
 
-	return &result, nil
+	return result, nil
 }
