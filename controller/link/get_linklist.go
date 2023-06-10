@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2023-03-15 23:59:29
  * @LastEditors: Adxiong
- * @LastEditTime: 2023-03-26 23:15:38
+ * @LastEditTime: 2023-05-02 16:13:23
  */
 package link
 
@@ -124,7 +124,7 @@ func GetLinkList(ctx *gin.Context) {
 func parseGetLinkList(ctx *gin.Context) (*getLinkListParams, error) {
 	p := &getLinkListParams{}
 
-	err := ctx.ShouldBindJSON(p)
+	err := ctx.ShouldBind(p)
 
 	if err != nil {
 		return nil, err

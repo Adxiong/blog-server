@@ -5,12 +5,13 @@
  * @Author: Adxiong
  * @Date: 2022-10-23 22:34:28
  * @LastEditors: Adxiong
- * @LastEditTime: 2022-10-29 00:39:13
+ * @LastEditTime: 2023-05-02 16:11:33
  */
 package httpserver
 
 import (
 	"blogserver/controller/article"
+	"blogserver/controller/link"
 	"blogserver/controller/user"
 	"blogserver/library/request"
 	"context"
@@ -85,6 +86,18 @@ var routes = map[string]RouterHandler{
 		Method: request.METHODGET,
 		Handle: HandleFuncs{
 			article.GetArticleList,
+		},
+	},
+	"/category/list": {
+		Method: request.METHODGET,
+		Handle: HandleFuncs{
+			link.GetLinkCategoryList,
+		},
+	},
+	"/link/list": {
+		Method: request.METHODGET,
+		Handle: HandleFuncs{
+			link.GetLinkList,
 		},
 	},
 }

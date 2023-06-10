@@ -4,7 +4,7 @@
  * @Author: Adxiong
  * @Date: 2023-03-12 16:56:53
  * @LastEditors: Adxiong
- * @LastEditTime: 2023-03-26 22:59:43
+ * @LastEditTime: 2023-04-09 23:43:28
  */
 package db
 
@@ -40,7 +40,7 @@ func (lc *LinkCategory) GetLinkCategoryByCid(ctx context.Context, cid uint64) (*
 // GetLinkCategoryList 获取所有link类别
 func (lc *LinkCategory) GetLinkCategoryList(ctx context.Context) (*LinkCategoryList, error) {
 	linkCategoryList := NewLinkCategoryList()
-	res := GlobalDb.Table(lc.TableName()).Order("create_at aes").Find(linkCategoryList)
+	res := GlobalDb.Table(lc.TableName()).Order("create_at asc").Find(linkCategoryList)
 
 	if res.Error != nil {
 		log.Println("err", res.Error)
